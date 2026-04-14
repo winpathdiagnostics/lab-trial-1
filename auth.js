@@ -2,16 +2,18 @@
 // CLERK AUTHENTICATION (Modern, Shield-Bypassing Login)
 // =====================================================================
 
-// Wait for the HTML document and deferred Clerk scripts to finish loading
-window.addEventListener('load', function () {
+// CHANGED: Made the event listener callback 'async' so we can use 'await' 
+// as required by the Clerk v6 documentation.
+window.addEventListener('load', async function () {
     
-    // 1. Safe Polling: Wait for Clerk to auto-initialize from the script tag
-    const checkClerkReady = setInterval(() => {
-        
-        // Check if the Clerk object exists and the listener function is ready
-        if (window.Clerk && typeof window.Clerk.addListener === 'function') {
-            clearInterval(checkClerkReady); // Stop polling
-            
+    if (window.Clerk) {
+        try {
+            // NEW: Explicitly initialize the Clerk engine. 
+            // According to the Quickstart docs, this is mandatory for the script tag setup.
+            await window.Clerk.load({
+                appearance: { variables: { colorPrimary: '#2C5EB4' } }
+            });
+
             // 2. Add the listener for login/logout events
             window.Clerk.addListener(({ user }) => {
                 const btnText = document.getElementById('auth-btn-text');
@@ -36,7 +38,7 @@ window.addEventListener('load', function () {
                         if(emailField) emailField.value = userProfile.email;
                     }
 
-                    // Mount the Profile Avatar & Logout Dropdown
+                    // CHANGED: Uses Clerk.mountUserButton as per the Components Overview docs
                     const userButtonDiv = document.getElementById('clerk-user-button');
                     if (userButtonDiv) {
                         window.Clerk.mountUserButton(userButtonDiv);
@@ -51,19 +53,24 @@ window.addEventListener('load', function () {
                     if(loggedOutView) loggedOutView.classList.remove('hidden');
                 }
             });
+        } catch (error) {
+            console.error("Clerk initialization failed:", error);
         }
-    }, 100); // Check every 100 milliseconds
+    } else {
+        console.error("Clerk script was not found on the window object.");
+    }
 });
 
 // Global function triggered by the hardcoded "Continue with Google" button in index.html
 window.triggerClerkLogin = function() {
     try {
-        // If Clerk exists and the openSignIn function is ready, pop the modal!
+        // CHANGED: Simplified check. Because we 'await' the load above, 
+        // we just need to confirm openSignIn is available as per the components docs.
         if (window.Clerk && typeof window.Clerk.openSignIn === 'function') {
             window.Clerk.openSignIn();
         } else {
-            // Failsafe alert in case the user has slow internet
-            alert("Secure connection is still loading. Please ensure you have internet access and try again in 3 seconds.");
+            // Failsafe alert in case the user clicked too fast or has slow internet
+            alert("Secure connection is still loading. Please wait a few seconds and try again.");
         }
     } catch (error) {
         console.error("Error opening login modal:", error);
