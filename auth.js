@@ -2,28 +2,23 @@
 // CLERK AUTHENTICATION (Modern, Shield-Bypassing Login)
 // =====================================================================
 
-// 1. REPLACE THIS WITH YOUR CLERK PUBLISHABLE KEY (Starts with 'pk_test_' or 'pk_live_')
-const CLERK_PUBLISHABLE_KEY = 'pk_test_Y2hvaWNlLXBpZ2Vvbi04Ny5jbGVyay5hY2NvdW50cy5kZXYk';
-
-// 2. Dynamically load the Clerk JavaScript library directly into your website
-const script = document.createElement('script');
-script.setAttribute('data-clerk-publishable-key', CLERK_PUBLISHABLE_KEY);
-script.async = true;
-script.src = 'https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js';
-script.crossOrigin = 'anonymous';
-
-// 3. What to do once Clerk finishes loading
-script.addEventListener('load', async function () {
-    // Initialize Clerk
+// Wait for the HTML document and Clerk scripts (loaded in index.html) to finish loading
+window.addEventListener('load', async function () {
+    
+    // 1. Initialize Clerk
+    // We add the primary brand color so the login box matches your website's theme
     await window.Clerk.load({
-        // Forces the login box to stay beautifully contained in your dashboard 
-        // without reloading the page or triggering browser popup blockers.
-        appearance: { variables: { colorPrimary: '#2C5EB4' } } 
+        appearance: { 
+            variables: { colorPrimary: '#2C5EB4' } 
+        } 
     });
 
-    // 4. Add a listener. This runs immediately on load, AND automatically runs again 
+    // 2. Add an authentication listener. 
+    // This runs immediately on page load, AND automatically runs again 
     // the exact second a user successfully signs in or signs out.
     window.Clerk.addListener(({ user }) => {
+        
+        // Grab the UI elements that need to change based on login state
         const btnText = document.getElementById('auth-btn-text');
         const mobText = document.getElementById('mobile-auth-text');
         const loggedInView = document.getElementById('dash-logged-in');
@@ -33,21 +28,28 @@ script.addEventListener('load', async function () {
             // ==========================================
             // STATE: USER IS SUCCESSFULLY LOGGED IN
             // ==========================================
+            
+            // Change Navigation bar text
             if(btnText) btnText.innerText = "Account";
             if(mobText) mobText.innerText = "My Account";
+            
+            // Swap the Dashboard views
             if(loggedInView) loggedInView.classList.remove('hidden');
             if(loggedOutView) loggedOutView.classList.add('hidden');
             
-            // Populate our global userProfile (used by main.js for checkout autofill)
+            // Populate our global userProfile (used by main.js to autofill the checkout cart)
             if (typeof userProfile !== 'undefined') {
                 userProfile.name = user.fullName || "Patient";
+                // Clerk stores emails in an array, we grab the primary one
                 userProfile.email = user.primaryEmailAddress?.emailAddress || "";
                 
+                // Pre-fill the dashboard email field and lock it
                 const emailField = document.getElementById('dash-email');
                 if(emailField) emailField.value = userProfile.email;
             }
 
             // Mount Clerk's beautiful "User Button" (Profile Pic + Logout Dropdown)
+            // This replaces the manual Logout button
             const userButtonDiv = document.getElementById('clerk-user-button');
             if (userButtonDiv) {
                 window.Clerk.mountUserButton(userButtonDiv);
@@ -57,8 +59,12 @@ script.addEventListener('load', async function () {
             // ==========================================
             // STATE: USER IS LOGGED OUT
             // ==========================================
+            
+            // Reset Navigation bar text
             if(btnText) btnText.innerText = "Login";
             if(mobText) mobText.innerText = "Login";
+            
+            // Swap the Dashboard views
             if(loggedInView) loggedInView.classList.add('hidden');
             if(loggedOutView) loggedOutView.classList.remove('hidden');
             
@@ -70,6 +76,3 @@ script.addEventListener('load', async function () {
         }
     });
 });
-
-// Append the script to the document to trigger the loading process
-document.body.appendChild(script);
