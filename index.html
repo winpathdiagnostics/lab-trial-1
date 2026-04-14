@@ -1,25 +1,18 @@
 <!DOCTYPE html>
-<!-- The 'scroll-smooth' class enables smooth transitions when clicking internal links -->
 <html lang="en" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- 
-      CONTENT SECURITY POLICY (CSP): 
-      Updated to permit connections to Google Firebase Auth and Google Form endpoints.
-      This prevents the browser from blocking the login popup or the checkout process.
-    -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://docs.google.com https://*.firebaseio.com https://*.googleapis.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://*.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://raw.githubusercontent.com data: https://www.svgrepo.com;">    
+    <!-- CSP Updated to allow Clerk's CDNs and APIs -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://docs.google.com https://*.clerk.accounts.dev https://*.clerk.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; worker-src 'self' blob:; img-src 'self' https://raw.githubusercontent.com data: https://www.svgrepo.com https://images.clerk.dev https://img.clerk.com;">    
     
     <title>Winpath Diagnostics | Precision Pathology</title>
     
-    <!-- Core UI Dependencies: Google Fonts & Tailwind CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Custom Tailwind Configuration for Winpath Branding -->
     <script>
         tailwind.config = {
             theme: {
@@ -48,7 +41,6 @@
         }
     </script>
 
-    <!-- Essential Custom Styles -->
     <style>
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
@@ -56,45 +48,39 @@
         
         body { font-family: 'Outfit', sans-serif; background-color: #ffffff; -webkit-tap-highlight-color: transparent; }
         
-        /* Brand Gradient Utilities */
         .brand-gradient-text { background: linear-gradient(to right, #2C5EB4, #27BBD4, #5DCE9E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .brand-gradient-bg { background: linear-gradient(to right, #2C5EB4, #27BBD4, #5DCE9E); }
 
-        /* Navigation: Mega Menu Hover Effects */
         .mega-menu { opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .group:hover .mega-menu { opacity: 1; visibility: visible; transform: translateY(0); }
 
-        /* Catalog Card Hover States */
         .test-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid #f1f5f9; cursor: pointer; }
         .test-card:hover { border-color: #27BBD4; transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
 
-        /* SPA Utility: Controls visibility of 'pages' */
         .view-hidden { display: none; }
         
-        /* Toast Notification Styling */
         #toast { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(100px); opacity: 0; }
         #toast.show { transform: translateY(0); opacity: 1; }
         
-        /* Global Floating WhatsApp CTA */
         .floating-wa { position: fixed; bottom: 24px; right: 24px; z-index: 100; animation: float 3s ease-in-out infinite; }
+        .back-btn { transition: transform 0.2s ease; }
+        .back-btn:hover { transform: translateX(-5px); }
     </style>
 </head>
 
 <body class="text-gray-800 antialiased selection:bg-brand-cyan selection:text-white overflow-x-hidden">
 
-    <!-- TOAST: Popped up by main.js when items are added to cart -->
     <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] bg-brand-dark text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 pointer-events-none">
         <svg class="w-5 h-5 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
         <span class="text-sm font-bold tracking-wide">Added to Cart</span>
     </div>
 
-    <!-- GLOBAL WHATSAPP BUTTON -->
     <a id="global-wa-btn" href="https://wa.me/919380116362?text=Hello%20Winpath%20Team!%20I'd%20like%20to%20book%20a%20test." target="_blank" rel="noopener noreferrer" class="floating-wa flex items-center gap-3 bg-brand-green text-white px-5 py-3 rounded-full shadow-2xl hover:scale-105 transition-transform">
         <span class="text-[10px] font-black uppercase tracking-widest hidden sm:block text-right leading-none">Book Home<br>Collection</span>
         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 0 5.495 0 12.05c0 2.096.547 4.142 1.588 5.945L0 24l6.105-1.604a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
     </a>
 
-    <!-- MAIN HEADER: Logic for Auth text and Cart badge is in auth.js and main.js -->
+    <!-- GLOBAL HEADER -->
     <header class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 flex flex-col">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full h-20 flex justify-between items-center">
             <div class="flex items-center cursor-pointer shrink-0" onclick="switchView('home')">
@@ -102,7 +88,15 @@
             </div>
 
             <div class="flex items-center gap-4 sm:gap-6">
-                <!-- Account Button: Text switches between 'Login' and 'Account' via auth.js -->
+                <!-- Social Media Icons (Hidden on mobile) -->
+                <div class="hidden sm:flex items-center gap-4 border-r border-gray-200 pr-4 sm:pr-6">
+                    <a href="#" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="text-gray-400 hover:text-brand-blue transition-colors"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+                    <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="text-gray-400 hover:text-pink-600 transition-colors"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.77-6.98 6.979-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 5.208 2.622 6.78 6.981 6.979 1.28.059 1.689.073 4.948.073 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.771 6.979-6.979.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-5.208-2.624-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+                    <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="text-gray-400 hover:text-blue-600 transition-colors"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg></a>
+                    <a href="#" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" class="text-gray-400 hover:text-gray-900 transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                </div>
+
+                <!-- Account/Dashboard Button -->
                 <button onclick="switchView('dashboard')" class="relative p-2 text-gray-500 hover:text-brand-blue transition-colors group flex items-center gap-2">
                     <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                     <span id="auth-btn-text" class="hidden sm:block text-xs font-black uppercase tracking-widest mt-1">Login</span>
@@ -117,13 +111,13 @@
                     <span class="hidden sm:block text-xs font-black uppercase tracking-widest mt-1">Cart</span>
                 </button>
 
-                <!-- Contact Button -->
+                <!-- Desktop Contact Button -->
                 <button onclick="switchView('contact')" class="hidden sm:block relative group active:scale-95 transition-all">
                     <span class="absolute -inset-1.5 brand-gradient-bg rounded-xl blur-md opacity-20 group-hover:opacity-60 transition-opacity"></span>
                     <div class="relative px-6 py-2.5 brand-gradient-bg text-sm font-black uppercase tracking-widest rounded-xl shadow-lg text-white">Contact Us</div>
                 </button>
 
-                <!-- Mobile Menu Toggle -->
+                <!-- Mobile Hamburger Menu Toggle -->
                 <div class="xl:hidden flex items-center">
                     <button onclick="toggleMobileMenu()" class="p-2 text-brand-blue focus:outline-none">
                         <svg id="menu-icon" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -133,10 +127,10 @@
             </div>
         </div>
 
-        <!-- Desktop Mega Menu -->
+        <!-- Secondary Nav Bar (Desktop Mega Menu) -->
         <div class="hidden xl:flex w-full h-16 border-t border-gray-50 bg-gray-50/30">
             <nav class="max-w-7xl mx-auto px-8 w-full flex justify-center space-x-12 items-center h-full">
-                <a href="javascript:void(0)" onclick="switchView('home')" class="text-sm font-black text-gray-500 hover:text-brand-blue uppercase tracking-widest h-full flex items-center">Home</a>
+                <a href="javascript:void(0)" onclick="switchView('home')" class="text-sm font-black text-gray-500 hover:text-brand-blue uppercase tracking-widest transition-colors h-full flex items-center">Home</a>
                 
                 <div class="relative h-full flex items-center group">
                     <button class="text-sm font-black text-gray-500 uppercase tracking-widest flex items-center gap-1 group-hover:text-brand-blue h-full">
@@ -153,6 +147,29 @@
 
                 <div class="relative h-full flex items-center group">
                     <button class="text-sm font-black text-gray-500 uppercase tracking-widest flex items-center gap-1 group-hover:text-brand-blue h-full">
+                        Health Conditions <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="mega-menu absolute top-full left-1/2 -translate-x-1/2 w-[600px] bg-white shadow-2xl rounded-b-2xl border-t-2 border-brand-cyan p-8 grid grid-cols-3 gap-x-8 gap-y-4 text-left">
+                        <div class="space-y-2">
+                            <a href="javascript:void(0)" onclick="filterByCategory('condition', 'Cardiovascular')" class="block text-sm font-bold text-gray-600 hover:text-brand-blue">Cardiovascular</a>
+                            <a href="javascript:void(0)" onclick="filterByCategory('condition', 'Hypertension')" class="block text-sm font-bold text-gray-600 hover:text-brand-blue">Hypertension</a>
+                            <a href="javascript:void(0)" onclick="filterByCategory('condition', 'Gut Health')" class="block text-sm font-bold text-gray-600 hover:text-brand-blue">Gut Health</a>
+                        </div>
+                        <div class="space-y-2">
+                            <a href="javascript:void(0)" onclick="filterByCategory('condition', 'Bone Health')" class="block text-sm font-bold text-gray-600 hover:text-brand-blue">Bone Health</a>
+                            <a href="javascript:void(0)" onclick="filterByCategory('condition', 'Cancer')" class="block text-sm font-bold text-gray-600 hover:text-brand-blue">Cancer</a>
+                            <a href="javascript:void(0)" onclick="filterByCategory('condition', 'Nutrition')" class="block text-sm font-bold text-gray-600 hover:text-brand-blue">Nutrition</a>
+                        </div>
+                        <div class="space-y-2">
+                            <a href="javascript:void(0)" onclick="filterByCategory('condition', 'Sexual Wellness')" class="block text-sm font-bold text-gray-600 hover:text-brand-blue">Sexual Wellness</a>
+                            <a href="javascript:void(0)" onclick="filterByCategory('condition', 'Alcohol')" class="block text-sm font-bold text-gray-600 hover:text-brand-blue">Alcohol Impact</a>
+                            <a href="javascript:void(0)" onclick="filterByCategory('condition', 'Obesity')" class="block text-sm font-bold text-gray-600 hover:text-brand-blue">Obesity</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative h-full flex items-center group">
+                    <button class="text-sm font-black text-gray-500 uppercase tracking-widest flex items-center gap-1 group-hover:text-brand-blue h-full">
                         Health Check Packages <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
                     </button>
                     <div class="mega-menu absolute top-full right-0 w-56 bg-white shadow-2xl rounded-b-2xl border-t-2 border-brand-green p-4 space-y-2 text-right">
@@ -163,11 +180,11 @@
                     </div>
                 </div>
 
-                <a href="javascript:void(0)" onclick="switchView('about')" class="text-sm font-black text-gray-500 hover:text-brand-blue uppercase tracking-widest h-full flex items-center">About Us</a>
+                <a href="javascript:void(0)" onclick="switchView('about')" class="text-sm font-black text-gray-500 hover:text-brand-blue uppercase tracking-widest transition-colors h-full flex items-center">About Us</a>
             </nav>
         </div>
 
-        <!-- MOBILE MENU DRAWER -->
+        <!-- Mobile Menu Drawer -->
         <div id="mobile-menu" class="hidden xl:hidden absolute top-20 left-0 w-full bg-white border-b border-gray-100 shadow-xl overflow-y-auto max-h-[80vh]">
             <div class="px-6 py-8 space-y-6 flex flex-col items-center uppercase font-black text-base tracking-widest">
                 <a href="javascript:void(0)" onclick="switchView('home')">Home</a>
@@ -211,7 +228,6 @@
                     </div>
                 </section>
 
-                <!-- Featured Section: Populated by main.js -->
                 <section class="py-20 sm:py-32 bg-white">
                     <div class="max-w-7xl mx-auto px-4">
                         <h2 class="text-5xl md:text-7xl font-black text-gray-900 tracking-tighter mb-16 text-center lg:text-left">
@@ -223,7 +239,7 @@
             </main>
         </div>
 
-        <!-- 2. CATALOG VIEW: Search & List -->
+        <!-- 2. CATALOG VIEW -->
         <div id="packages-page-view" class="view-hidden pt-32 xl:pt-48 pb-20 bg-gray-50 min-h-screen px-4">
             <div class="max-w-7xl mx-auto">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12 text-left">
@@ -246,7 +262,7 @@
             </div>
         </div>
 
-        <!-- 3. TEST DETAIL VIEW: Injected dynamically -->
+        <!-- 3. TEST DETAIL VIEW -->
         <div id="test-detail-view" class="view-hidden pt-32 xl:pt-48 pb-32 lg:pb-20 bg-white min-h-screen">
             <div class="max-w-4xl mx-auto px-6">
                 <button onclick="goBack()" class="flex items-center gap-2 text-[10px] font-black uppercase text-brand-blue mb-12">
@@ -333,27 +349,24 @@
             </div>
         </div>
 
-        <!-- 5. DASHBOARD VIEW: User profile & family management -->
+        <!-- 5. DASHBOARD VIEW -->
         <div id="dashboard-view" class="view-hidden pt-32 xl:pt-40 pb-20 bg-gray-50 min-h-screen px-4 sm:px-6">
             <div class="max-w-4xl mx-auto text-left">
                 
-                <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-12 gap-6">
                     <h1 class="text-4xl sm:text-5xl font-black text-gray-900 tracking-tighter uppercase leading-none">My <span class="brand-gradient-text italic">Account.</span></h1>
-                    <!-- Visible only when logged in -->
-                    <button id="logout-btn" onclick="logoutUser()" class="hidden px-6 py-3 bg-white border border-gray-200 hover:bg-red-50 text-red-500 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors shadow-sm active:scale-95">Sign Out</button>
+                    
+                    <!-- Clerk User Profile Picture Dropdown injects here -->
+                    <div id="clerk-user-button" class="h-10 flex items-center justify-end"></div>
                 </div>
                 
                 <!-- STATE: LOGGED OUT -->
-                <div id="dash-logged-out" class="bg-white p-12 rounded-[3rem] shadow-sm border border-gray-100 text-center max-w-2xl mx-auto">
-                    <div class="w-20 h-20 bg-brand-cyan/10 rounded-3xl flex items-center justify-center mx-auto mb-8">
-                        <svg class="w-10 h-10 text-brand-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
-                    </div>
+                <div id="dash-logged-out" class="py-12 text-center max-w-2xl mx-auto">
                     <h2 class="text-2xl font-black text-gray-900 mb-4">Patient Login</h2>
-                    <p class="text-gray-500 mb-10 max-w-md mx-auto leading-relaxed">Sign in with Google to save your family details and access a faster booking experience.</p>
-                    <button onclick="loginWithGoogle()" class="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-10 py-5 bg-white border-2 border-gray-100 hover:border-brand-blue rounded-2xl text-sm font-black text-gray-700 hover:text-brand-blue transition-all shadow-sm active:scale-95">
-                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google Logo">
-                        Continue with Google
-                    </button>
+                    <p class="text-gray-500 mb-10 max-w-md mx-auto leading-relaxed">Sign in to securely manage your family profiles and speed up your home collection bookings.</p>
+                    
+                    <!-- Clerk Sign-In Box injects here -->
+                    <div id="clerk-sign-in" class="flex justify-center mt-8"></div>
                 </div>
 
                 <!-- STATE: LOGGED IN -->
@@ -391,16 +404,14 @@
                                 <button onclick="addFamilyMember()" class="w-full py-4 brand-gradient-bg text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md active:scale-95 transition-all">Add Dependent</button>
                             </div>
                         </div>
-                        <!-- Container for dynamic family member cards -->
                         <div id="family-members-list" class="space-y-4"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- STATIC PAGES: ABOUT, PRIVACY, TERMS, CONTACT (As mapped previously) -->
+        <!-- STATIC PAGES: ABOUT, PRIVACY, TERMS, CONTACT -->
         <div id="contact-view" class="view-hidden pt-32 xl:pt-48 pb-20 bg-gray-50 min-h-screen px-6">
-            <!-- Simplified Contact UI for brevity -->
             <div class="max-w-4xl mx-auto text-center">
                 <h1 class="text-5xl font-black text-gray-900 tracking-tighter uppercase mb-16">Contact <span class="brand-gradient-text italic">Us.</span></h1>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
@@ -423,7 +434,6 @@
         </div>
         
         <div id="about-view" class="view-hidden pt-32 xl:pt-48 pb-20 bg-white min-h-screen px-6">
-             <!-- Simplified About UI -->
              <div class="max-w-4xl mx-auto text-left">
                 <h1 class="text-4xl sm:text-6xl font-black text-gray-900 tracking-tighter uppercase mb-12">Clinical Integrity. <br><span class="brand-gradient-text">Personal Care.</span></h1>
                 <p class="text-gray-600 font-medium leading-relaxed mb-12">Winpath Diagnostics is Bengaluru's premier pathologist-led screening center. We prioritize accuracy over volume, ensuring every report is verified by a specialist.</p>
@@ -463,18 +473,13 @@
     </footer>
 
     <!-- 
-      LOAD EXTERNAL SCRIPTS IN SPECIFIC ORDER:
-      1. data.js -> The data source
-      2. billing.js -> The math configuration
-      3. patient-details.js -> The Google Sheets gateway
-      4. auth.js -> The Google Firebase login logic (Loaded as Module)
-      5. main.js -> The application core logic
+      LOAD EXTERNAL SCRIPTS
+      Updated: Clerk auth.js loaded first (after data dependencies) so it initializes immediately.
     -->
     <script src="data.js"></script>
     <script src="billing.js"></script>
     <script src="patient-details.js"></script>
-    <!-- Use type="module" for auth.js because it uses imports -->
-    <script type="module" src="auth.js"></script>
+    <script src="auth.js"></script>
     <script src="main.js"></script>
     
 </body>
