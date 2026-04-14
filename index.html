@@ -5,14 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- CSP Updated to allow Clerk's CDNs and APIs -->
+    <!-- 
+      CONTENT SECURITY POLICY (CSP)
+      Updated to explicitly allow Clerk's CDNs (choice-pigeon-87.clerk.accounts.dev) 
+      and API endpoints to ensure the login modal is never blocked by the browser.
+    -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://docs.google.com https://*.clerk.accounts.dev https://*.clerk.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://*.clerk.accounts.dev; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; worker-src 'self' blob:; img-src 'self' https://raw.githubusercontent.com data: https://www.svgrepo.com https://images.clerk.dev https://img.clerk.com;">    
     
     <title>Winpath Diagnostics | Precision Pathology</title>
     
+    <!-- Core UI Dependencies -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Custom Tailwind Configuration for Winpath Branding -->
     <script>
         tailwind.config = {
             theme: {
@@ -41,6 +47,7 @@
         }
     </script>
 
+    <!-- Essential Custom Styles -->
     <style>
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
@@ -57,6 +64,9 @@
         .test-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid #f1f5f9; cursor: pointer; }
         .test-card:hover { border-color: #27BBD4; transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
 
+        .specialty-pill { transition: all 0.4s ease; }
+        .specialty-pill:hover { transform: translateY(-5px); background: white; box-shadow: 0 15px 30px -10px rgba(44, 94, 180, 0.15); }
+
         .view-hidden { display: none; }
         
         #toast { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(100px); opacity: 0; }
@@ -70,11 +80,13 @@
 
 <body class="text-gray-800 antialiased selection:bg-brand-cyan selection:text-white overflow-x-hidden">
 
+    <!-- Toast Notification (Triggered by cart.js) -->
     <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] bg-brand-dark text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 pointer-events-none">
         <svg class="w-5 h-5 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
         <span class="text-sm font-bold tracking-wide">Added to Cart</span>
     </div>
 
+    <!-- Global Floating WhatsApp Button -->
     <a id="global-wa-btn" href="https://wa.me/919380116362?text=Hello%20Winpath%20Team!%20I'd%20like%20to%20book%20a%20test." target="_blank" rel="noopener noreferrer" class="floating-wa flex items-center gap-3 bg-brand-green text-white px-5 py-3 rounded-full shadow-2xl hover:scale-105 transition-transform">
         <span class="text-[10px] font-black uppercase tracking-widest hidden sm:block text-right leading-none">Book Home<br>Collection</span>
         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 0 5.495 0 12.05c0 2.096.547 4.142 1.588 5.945L0 24l6.105-1.604a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
@@ -83,6 +95,8 @@
     <!-- GLOBAL HEADER -->
     <header class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 flex flex-col">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full h-20 flex justify-between items-center">
+            
+            <!-- Logo -->
             <div class="flex items-center cursor-pointer shrink-0" onclick="switchView('home')">
                 <img src="https://raw.githubusercontent.com/winpathdiagnostics/Trial-3/main/WINPATH-LOGO-OG2.png" alt="Winpath" class="h-8 sm:h-10 w-auto object-contain">
             </div>
@@ -96,7 +110,7 @@
                     <a href="#" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" class="text-gray-400 hover:text-gray-900 transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
                 </div>
 
-                <!-- Account/Dashboard Button -->
+                <!-- Account/Dashboard Link (Text managed by Clerk in auth.js) -->
                 <button onclick="switchView('dashboard')" class="relative p-2 text-gray-500 hover:text-brand-blue transition-colors group flex items-center gap-2">
                     <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                     <span id="auth-btn-text" class="hidden sm:block text-xs font-black uppercase tracking-widest mt-1">Login</span>
@@ -200,9 +214,12 @@
     <!-- SPA VIEW CONTAINER -->
     <div id="main-content">
         
-        <!-- 1. HOME VIEW -->
+        <!-- ============================================== -->
+        <!-- 1. HOME VIEW                                   -->
+        <!-- ============================================== -->
         <div id="home-view">
             <main class="pt-28 xl:pt-40">
+                <!-- Hero Section -->
                 <section class="py-12 md:py-32 px-4 max-w-7xl mx-auto">
                     <div class="grid grid-cols-1 lg:grid-cols-2 items-center gap-12 text-center lg:text-left">
                         <div class="order-1 flex flex-col items-center lg:items-start">
@@ -228,18 +245,40 @@
                     </div>
                 </section>
 
+                <!-- Featured Packages Section -->
                 <section class="py-20 sm:py-32 bg-white">
                     <div class="max-w-7xl mx-auto px-4">
                         <h2 class="text-5xl md:text-7xl font-black text-gray-900 tracking-tighter mb-16 text-center lg:text-left">
                             Health <span class="brand-gradient-text italic">Packages.</span>
                         </h2>
+                        <!-- Populated by populateFeaturedPackages() in main.js -->
                         <div id="featured-packages-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+                    </div>
+                </section>
+
+                <!-- RESTORED: Diagnostic Specialties Grid -->
+                <section class="py-20 bg-gray-50 border-t border-gray-100">
+                    <div class="max-w-7xl mx-auto px-4 text-center">
+                        <div class="inline-flex items-center gap-3 px-4 py-1 bg-brand-blue/10 text-brand-blue rounded-full text-[9px] font-black uppercase tracking-[0.3em] mb-6 tracking-widest">Laboratory Expertise</div>
+                        <h2 class="text-3xl sm:text-4xl md:text-6xl font-black text-gray-900 mb-16 tracking-tighter uppercase leading-none italic">Diagnostic <span class="brand-gradient-text">Specialties.</span></h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                            <div class="specialty-pill px-6 py-6 sm:py-8 rounded-[1.5rem] sm:rounded-[2rem] bg-brand-blue/5 border-l-4 border-brand-blue flex items-center justify-center text-center"><h4 class="text-sm sm:text-base md:text-lg font-bold text-gray-900 uppercase tracking-tight">Hematology</h4></div>
+                            <div class="specialty-pill px-6 py-6 sm:py-8 rounded-[1.5rem] sm:rounded-[2rem] bg-brand-cyan/5 border-l-4 border-brand-cyan flex items-center justify-center text-center"><h4 class="text-sm sm:text-base md:text-lg font-bold text-gray-900 uppercase tracking-tight">Biochemistry</h4></div>
+                            <div class="specialty-pill px-6 py-6 sm:py-8 rounded-[1.5rem] sm:rounded-[2rem] bg-brand-green/5 border-l-4 border-brand-green flex items-center justify-center text-center"><h4 class="text-sm sm:text-base md:text-lg font-bold text-gray-900 uppercase tracking-tight">Immunology</h4></div>
+                            <div class="specialty-pill px-6 py-6 sm:py-8 rounded-[1.5rem] sm:rounded-[2rem] bg-brand-blue/5 border-l-4 border-brand-blue flex items-center justify-center text-center"><h4 class="text-sm sm:text-base md:text-lg font-bold text-gray-900 uppercase tracking-tight">Microbiology</h4></div>
+                            <div class="specialty-pill px-6 py-6 sm:py-8 rounded-[1.5rem] sm:rounded-[2rem] bg-brand-cyan/5 border-l-4 border-brand-cyan flex items-center justify-center text-center"><h4 class="text-sm sm:text-base md:text-lg font-bold text-gray-900 uppercase tracking-tight leading-tight">Clinical<br>Pathology</h4></div>
+                            <div class="specialty-pill px-6 py-6 sm:py-8 rounded-[1.5rem] sm:rounded-[2rem] bg-brand-green/5 border-l-4 border-brand-green flex items-center justify-center text-center"><h4 class="text-sm sm:text-base md:text-lg font-bold text-gray-900 uppercase tracking-tight">Cytopathology</h4></div>
+                            <div class="specialty-pill px-6 py-6 sm:py-8 rounded-[1.5rem] sm:rounded-[2rem] bg-brand-blue/5 border-l-4 border-brand-blue flex items-center justify-center text-center"><h4 class="text-sm sm:text-base md:text-lg font-bold text-gray-900 uppercase tracking-tight leading-tight">Molecular<br>Diagnostics</h4></div>
+                            <div class="specialty-pill px-6 py-6 sm:py-8 rounded-[1.5rem] sm:rounded-[2rem] bg-brand-cyan/5 border-l-4 border-brand-cyan flex items-center justify-center text-center"><h4 class="text-sm sm:text-base md:text-lg font-bold text-gray-900 uppercase tracking-tight">Serology</h4></div>
+                        </div>
                     </div>
                 </section>
             </main>
         </div>
 
-        <!-- 2. CATALOG VIEW -->
+        <!-- ============================================== -->
+        <!-- 2. CATALOG VIEW (Test Menu)                    -->
+        <!-- ============================================== -->
         <div id="packages-page-view" class="view-hidden pt-32 xl:pt-48 pb-20 bg-gray-50 min-h-screen px-4">
             <div class="max-w-7xl mx-auto">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12 text-left">
@@ -258,31 +297,39 @@
                     </div>
                 </div>
                 
+                <!-- Populated by filterTests() in main.js -->
                 <div id="test-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
             </div>
         </div>
 
-        <!-- 3. TEST DETAIL VIEW -->
+        <!-- ============================================== -->
+        <!-- 3. TEST DETAIL VIEW                            -->
+        <!-- ============================================== -->
         <div id="test-detail-view" class="view-hidden pt-32 xl:pt-48 pb-32 lg:pb-20 bg-white min-h-screen">
             <div class="max-w-4xl mx-auto px-6">
                 <button onclick="goBack()" class="flex items-center gap-2 text-[10px] font-black uppercase text-brand-blue mb-12">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     Back to Catalog
                 </button>
+                <!-- Injected dynamically by showTestDetail() in main.js -->
                 <div id="detail-content"></div>
             </div>
         </div>
 
-        <!-- 4. CART & CHECKOUT VIEW -->
+        <!-- ============================================== -->
+        <!-- 4. CART & CHECKOUT VIEW                        -->
+        <!-- ============================================== -->
         <div id="cart-view" class="view-hidden pt-32 xl:pt-40 pb-20 bg-gray-50 min-h-screen px-4">
             <div class="max-w-6xl mx-auto text-left">
                 <h1 class="text-4xl sm:text-5xl font-black text-gray-900 tracking-tighter uppercase mb-12">Your <span class="brand-gradient-text italic">Cart.</span></h1>
                 
+                <!-- Empty Cart State -->
                 <div id="empty-cart-msg" class="hidden text-center py-20 bg-white rounded-[3rem] border border-gray-100">
                     <p class="text-xl font-black text-gray-300 uppercase tracking-widest mb-6">Your cart is empty</p>
                     <button onclick="switchView('packages-page')" class="px-8 py-4 bg-brand-blue/10 text-brand-blue text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all">Browse Tests</button>
                 </div>
 
+                <!-- Active Cart State -->
                 <div id="cart-content" class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start hidden">
                     <div class="lg:col-span-2 space-y-8">
                         <div class="bg-white p-6 sm:p-10 rounded-[3rem] shadow-sm border border-gray-100">
@@ -349,14 +396,16 @@
             </div>
         </div>
 
-        <!-- 5. DASHBOARD VIEW -->
+        <!-- ============================================== -->
+        <!-- 5. DASHBOARD VIEW (Auth Integration)           -->
+        <!-- ============================================== -->
         <div id="dashboard-view" class="view-hidden pt-32 xl:pt-40 pb-20 bg-gray-50 min-h-screen px-4 sm:px-6">
             <div class="max-w-4xl mx-auto text-left">
                 
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-12 gap-6">
                     <h1 class="text-4xl sm:text-5xl font-black text-gray-900 tracking-tighter uppercase leading-none">My <span class="brand-gradient-text italic">Account.</span></h1>
                     
-                    <!-- Clerk User Profile Picture Dropdown injects here -->
+                    <!-- Clerk Mount Point: User Profile Picture Dropdown injects here -->
                     <div id="clerk-user-button" class="h-10 flex items-center justify-end"></div>
                 </div>
                 
@@ -365,8 +414,11 @@
                     <h2 class="text-2xl font-black text-gray-900 mb-4">Patient Login</h2>
                     <p class="text-gray-500 mb-10 max-w-md mx-auto leading-relaxed">Sign in to securely manage your family profiles and speed up your home collection bookings.</p>
                     
-                    <!-- Clerk Sign-In Box injects here -->
-                    <div id="clerk-sign-in" class="flex justify-center mt-8"></div>
+                    <!-- HARDCODED BUTTON: Triggers Clerk Login via auth.js to guarantee it never vanishes -->
+                    <button onclick="triggerClerkLogin()" class="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-10 py-5 bg-white border-2 border-gray-100 hover:border-brand-blue rounded-2xl text-sm font-black text-gray-700 hover:text-brand-blue transition-all shadow-sm active:scale-95 mx-auto">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                        Continue with Google
+                    </button>
                 </div>
 
                 <!-- STATE: LOGGED IN -->
@@ -376,6 +428,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                             <div>
                                 <label class="text-[10px] font-black uppercase text-gray-400 mb-2 block tracking-widest">Verified Email</label>
+                                <!-- Email is populated dynamically by Clerk via auth.js -->
                                 <input type="email" id="dash-email" class="w-full px-5 py-4 bg-gray-50 text-gray-400 rounded-2xl font-semibold cursor-not-allowed" readonly>
                             </div>
                             <div>
@@ -404,13 +457,16 @@
                                 <button onclick="addFamilyMember()" class="w-full py-4 brand-gradient-bg text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md active:scale-95 transition-all">Add Dependent</button>
                             </div>
                         </div>
+                        <!-- Container for dynamic family member cards -->
                         <div id="family-members-list" class="space-y-4"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- STATIC PAGES: ABOUT, PRIVACY, TERMS, CONTACT -->
+        <!-- ============================================== -->
+        <!-- STATIC PAGES: CONTACT, ABOUT, PRIVACY, TERMS   -->
+        <!-- ============================================== -->
         <div id="contact-view" class="view-hidden pt-32 xl:pt-48 pb-20 bg-gray-50 min-h-screen px-6">
             <div class="max-w-4xl mx-auto text-center">
                 <h1 class="text-5xl font-black text-gray-900 tracking-tighter uppercase mb-16">Contact <span class="brand-gradient-text italic">Us.</span></h1>
@@ -433,11 +489,41 @@
             </div>
         </div>
         
+        <!-- RESTORED: ABOUT US STORY & ROADMAP -->
         <div id="about-view" class="view-hidden pt-32 xl:pt-48 pb-20 bg-white min-h-screen px-6">
              <div class="max-w-4xl mx-auto text-left">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand-cyan/20 bg-brand-cyan/5 text-brand-blue font-bold text-[10px] uppercase tracking-widest mb-8">The Winpath Story</div>
                 <h1 class="text-4xl sm:text-6xl font-black text-gray-900 tracking-tighter uppercase mb-12">Clinical Integrity. <br><span class="brand-gradient-text">Personal Care.</span></h1>
-                <p class="text-gray-600 font-medium leading-relaxed mb-12">Winpath Diagnostics is Bengaluru's premier pathologist-led screening center. We prioritize accuracy over volume, ensuring every report is verified by a specialist.</p>
-                <div id="roadmap-container" class="relative border-l-2 border-brand-cyan/20 ml-5 space-y-8"></div>
+                
+                <div class="prose prose-lg text-gray-600 space-y-8 font-medium leading-relaxed text-left">
+                    <p>Winpath Diagnostics was founded on a singular premise: <span class="font-black text-gray-900 text-xl tracking-tight leading-tight">that every sample represents a person awaiting an answer.</span> I started this lab because I believe healthcare deserves a personal touch that corporate diagnostics often lacks.</p>
+                    
+                    <div class="bg-gray-50 p-8 rounded-[2.5rem] border border-gray-100 my-12 text-left">
+                        <h2 class="text-2xl font-black text-gray-900 mb-6 tracking-tight">Meet Your Pathologist</h2>
+                        <div class="flex flex-col sm:flex-row gap-8 items-start">
+                            <div class="flex-1">
+                                <h3 class="text-brand-blue font-black text-lg mb-1">Dr. Joswin Rakesh Dsa</h3>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">MBBS (KSHEMA), MD Pathology (KMC Manipal)</p>
+                                <p class="text-sm leading-relaxed text-gray-500 mb-6">As a <strong>first-generation doctor</strong>, my journey into medicine was fueled by a desire to make a difference. After pursuing my MBBS from <strong>KS Hegde Medical Academy (KSHEMA), Mangalore</strong> and completing my postgraduation in Pathology from the prestigious <strong>Kasturba Medical College (KMC), Manipal</strong>, I saw the need for a lab that prioritizes accuracy over volume.</p>
+                                <div class="flex gap-4">
+                                    <div class="px-4 py-2 bg-white rounded-xl border border-gray-100 text-[10px] font-black uppercase tracking-widest text-brand-cyan">Self-Funded</div>
+                                    <div class="px-4 py-2 bg-white rounded-xl border border-gray-100 text-[10px] font-black uppercase tracking-widest text-brand-blue">Independent</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p>Unlike many modern facilities, Winpath is <strong>completely self-funded and doctor-owned</strong>. We aren't answerable to corporate boards or investors—we are answerable only to you. This independence allows us to maintain the rigorous <strong>ISO 15189:2022 standards</strong> without compromise.</p>
+                    
+                    <p>When you get a report from Winpath, you aren't just getting data. You are getting a document verified by a specialist who is personally invested in your health journey.</p>
+                </div>
+
+                <div class="mt-24 mb-10">
+                    <div class="inline-flex items-center gap-3 px-4 py-1 bg-brand-green/10 text-brand-green rounded-full text-[9px] font-black uppercase tracking-[0.3em] mb-6">Our Future</div>
+                    <h2 class="text-3xl sm:text-5xl font-black text-gray-900 mb-4 tracking-tighter">Strategic <span class="brand-gradient-text italic">Roadmap.</span></h2>
+                    <p class="text-gray-500 text-sm mb-12 max-w-2xl leading-relaxed">The milestones that define our commitment to precision and the goals we are building towards for our customers.</p>
+                    <div id="roadmap-container" class="relative border-l-2 border-brand-cyan/20 ml-3 sm:ml-5 space-y-8 pb-4"></div>
+                </div>
              </div>
         </div>
 
@@ -473,16 +559,18 @@
     </footer>
 
     <!-- 
-      LOAD EXTERNAL SCRIPTS
+      LOAD EXTERNAL SCRIPTS (Order matters!)
     -->
     <script src="data.js"></script>
     <script src="billing.js"></script>
     <script src="patient-details.js"></script>
+    <script src="cart.js"></script>
     
-    <!-- CLERK AUTHENTICATION SCRIPTS -->
+    <!-- CLERK AUTHENTICATION SCRIPTS (Version 6, specific to choice-pigeon-87) -->
     <script defer crossorigin="anonymous" src="https://choice-pigeon-87.clerk.accounts.dev/npm/@clerk/ui@1/dist/ui.browser.js" type="text/javascript"></script>
     <script defer crossorigin="anonymous" data-clerk-publishable-key="pk_test_Y2hvaWNlLXBpZ2Vvbi04Ny5jbGVyay5hY2NvdW50cy5kZXYk" src="https://choice-pigeon-87.clerk.accounts.dev/npm/@clerk/clerk-js@6/dist/clerk.browser.js" type="text/javascript"></script>
     
+    <!-- Custom Application Logic -->
     <script src="auth.js"></script>
     <script src="main.js"></script>
     
