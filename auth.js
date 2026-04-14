@@ -3,7 +3,7 @@
 // =====================================================================
 
 // 1. REPLACE THIS WITH YOUR CLERK PUBLISHABLE KEY (Starts with 'pk_test_' or 'pk_live_')
-const CLERK_PUBLISHABLE_KEY = 'YOUR_CLERK_PUBLISHABLE_KEY';
+const CLERK_PUBLISHABLE_KEY = 'pk_test_Y2hvaWNlLXBpZ2Vvbi04Ny5jbGVyay5hY2NvdW50cy5kZXYk';
 
 // 2. Dynamically load the Clerk JavaScript library directly into your website
 const script = document.createElement('script');
